@@ -132,10 +132,13 @@ defmodule JSONRPC2.Server.Handler do
         # if that error originates from the very module.handle_request call - handle, otherwise - reraise
         case e do
           %FunctionClauseError{function: :handle_request, module: ^module} ->
+            IO.inspect(e)
             standard_error_response(:method_not_found, %{method: method, params: params}, id)
 
           other_e ->
+            IO.inspect(other_e)
             stacktrace = System.stacktrace()
+            IO.inspect(stacktrace)
             log_error(module, method, params, :error, other_e, stacktrace)
             Kernel.reraise(other_e, stacktrace)
         end
@@ -155,6 +158,7 @@ defmodule JSONRPC2.Server.Handler do
       kind, payload ->
         stacktrace = System.stacktrace()
         log_error(module, method, params, kind, payload, stacktrace)
+        IO.inspect(stacktrace)
 
         standard_error_response(:internal_error, id)
     end
